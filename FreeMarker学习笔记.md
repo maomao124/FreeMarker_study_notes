@@ -605,7 +605,681 @@ http://localhost:8080/test2
 
 ### 遍历Map数据
 
+#### 创建test3.ftl
+
+```html
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<table>
+    <tr>
+        <td>序号</td>
+        <td>学号</td>
+        <td>姓名</td>
+        <td>性别</td>
+        <td>年龄</td>
+    </tr>
+    <#list studentMap?keys as k>
+        <tr>
+            <td>${k_index + 1}</td>
+            <td>${studentMap[k].id}</td>
+            <td>${studentMap[k].name}</td>
+            <td>${studentMap[k].sex}</td>
+            <td>${studentMap[k].age}</td>
+        </tr>
+    </#list>
+</table>
+
+<br>
+
+${studentMap['student1'].name}
+<br>
+${studentMap.student2.name}
+
+</body>
+</html>
+```
 
 
 
+
+
+#### 修改controller
+
+```java
+package mao.spring_boot_freemarker_demo;
+
+import mao.spring_boot_freemarker_demo.entity.Student;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Project name(项目名称)：spring_boot_freemarker_demo
+ * Package(包名): mao.spring_boot_freemarker_demo
+ * Class(类名): TestController
+ * Author(作者）: mao
+ * Author QQ：1296193245
+ * GitHub：https://github.com/maomao124/
+ * Date(创建日期)： 2023/1/29
+ * Time(创建时间)： 19:56
+ * Version(版本): 1.0
+ * Description(描述)： 无
+ */
+
+@Controller
+public class TestController
+{
+    @RequestMapping("/test1")
+    public String freemarker(Map<String, Object> map)
+    {
+        map.put("name", "张三");
+        //返回模板文件名称
+        return "test1";
+    }
+
+    @RequestMapping("/test2")
+    public String freemarker2(Map<String, Object> map)
+    {
+        Student student1 = new Student();
+        student1.setId(10001L);
+        student1.setName("张三");
+        student1.setSex("男");
+        student1.setAge(18);
+
+        Student student2 = new Student();
+        student2.setId(10002L);
+        student2.setName("李四");
+        student2.setSex("男");
+        student2.setAge(19);
+
+        Student student3 = new Student();
+        student3.setId(10004L);
+        student3.setName("王五");
+        student3.setSex("女");
+        student3.setAge(17);
+
+        List<Student> list = new ArrayList<>(3);
+        list.add(student1);
+        list.add(student2);
+        list.add(student3);
+
+        map.put("stus", list);
+
+        //返回模板文件名称
+        return "test2";
+    }
+
+    @RequestMapping("/test3")
+    public String freemarker3(Map<String, Object> map)
+    {
+        Student student1 = new Student();
+        student1.setId(10001L);
+        student1.setName("张三");
+        student1.setSex("男");
+        student1.setAge(18);
+
+        Student student2 = new Student();
+        student2.setId(10002L);
+        student2.setName("李四");
+        student2.setSex("男");
+        student2.setAge(19);
+
+        Student student3 = new Student();
+        student3.setId(10004L);
+        student3.setName("王五");
+        student3.setSex("女");
+        student3.setAge(17);
+
+        Map<String, Student> studentMap = new HashMap<>();
+
+        studentMap.put("student1", student1);
+        studentMap.put("student2", student2);
+        studentMap.put("student3", student3);
+
+        map.put("studentMap", studentMap);
+
+        //返回模板文件名称
+        return "test3";
+    }
+}
+```
+
+
+
+
+
+#### 运行测试
+
+http://localhost:8080/test3
+
+
+
+![image-20230129203400833](img/FreeMarker学习笔记/image-20230129203400833.png)
+
+
+
+
+
+
+
+
+
+### if指令
+
+if 指令即判断指令，是常用的FTL指令，freemarker在解析时遇到if会进行判断，条件为真则输出if中间的内容，否则跳过内容不再输出
+
+
+
+#### 创建test4.ftl
+
+```html
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<table>
+    <tr>
+        <td>序号</td>
+        <td>学号</td>
+        <td>姓名</td>
+        <td>性别</td>
+        <td>年龄</td>
+    </tr>
+    <#list stus as stu>
+        <tr>
+            <td <#if stu_index==2>style="color: hotpink" </#if>>${stu_index + 1}</td>
+            <td>${stu.id}</td>
+            <td<#if stu.name=='张三'> style="color: skyblue" </#if>>${stu.name}</td>
+            <td>${stu.sex}</td>
+            <td>${stu.age}</td>
+        </tr>
+    </#list>
+</table>
+
+</body>
+</html>
+```
+
+
+
+
+
+#### 修改controller
+
+```java
+package mao.spring_boot_freemarker_demo;
+
+import mao.spring_boot_freemarker_demo.entity.Student;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Project name(项目名称)：spring_boot_freemarker_demo
+ * Package(包名): mao.spring_boot_freemarker_demo
+ * Class(类名): TestController
+ * Author(作者）: mao
+ * Author QQ：1296193245
+ * GitHub：https://github.com/maomao124/
+ * Date(创建日期)： 2023/1/29
+ * Time(创建时间)： 19:56
+ * Version(版本): 1.0
+ * Description(描述)： 无
+ */
+
+@Controller
+public class TestController
+{
+    @RequestMapping("/test1")
+    public String freemarker(Map<String, Object> map)
+    {
+        map.put("name", "张三");
+        //返回模板文件名称
+        return "test1";
+    }
+
+    @RequestMapping("/test2")
+    public String freemarker2(Map<String, Object> map)
+    {
+        Student student1 = new Student();
+        student1.setId(10001L);
+        student1.setName("张三");
+        student1.setSex("男");
+        student1.setAge(18);
+
+        Student student2 = new Student();
+        student2.setId(10002L);
+        student2.setName("李四");
+        student2.setSex("男");
+        student2.setAge(19);
+
+        Student student3 = new Student();
+        student3.setId(10004L);
+        student3.setName("王五");
+        student3.setSex("女");
+        student3.setAge(17);
+
+        List<Student> list = new ArrayList<>(3);
+        list.add(student1);
+        list.add(student2);
+        list.add(student3);
+
+        map.put("stus", list);
+
+        //返回模板文件名称
+        return "test2";
+    }
+
+    @RequestMapping("/test3")
+    public String freemarker3(Map<String, Object> map)
+    {
+        Student student1 = new Student();
+        student1.setId(10001L);
+        student1.setName("张三");
+        student1.setSex("男");
+        student1.setAge(18);
+
+        Student student2 = new Student();
+        student2.setId(10002L);
+        student2.setName("李四");
+        student2.setSex("男");
+        student2.setAge(19);
+
+        Student student3 = new Student();
+        student3.setId(10004L);
+        student3.setName("王五");
+        student3.setSex("女");
+        student3.setAge(17);
+
+        Map<String, Student> studentMap = new HashMap<>();
+
+        studentMap.put("student1", student1);
+        studentMap.put("student2", student2);
+        studentMap.put("student3", student3);
+
+        map.put("studentMap", studentMap);
+
+        //返回模板文件名称
+        return "test3";
+    }
+
+    @RequestMapping("/test4")
+    public String freemarker4(Map<String, Object> map)
+    {
+        Student student1 = new Student();
+        student1.setId(10001L);
+        student1.setName("张三");
+        student1.setSex("男");
+        student1.setAge(18);
+
+        Student student2 = new Student();
+        student2.setId(10002L);
+        student2.setName("李四");
+        student2.setSex("男");
+        student2.setAge(19);
+
+        Student student3 = new Student();
+        student3.setId(10004L);
+        student3.setName("王五");
+        student3.setSex("女");
+        student3.setAge(17);
+
+        List<Student> list = new ArrayList<>(3);
+        list.add(student1);
+        list.add(student2);
+        list.add(student3);
+
+        map.put("stus", list);
+
+        //返回模板文件名称
+        return "test4";
+    }
+}
+```
+
+
+
+
+
+
+
+#### 运行测试
+
+http://localhost:8080/test4
+
+
+
+![image-20230129204221710](img/FreeMarker学习笔记/image-20230129204221710.png)
+
+
+
+
+
+
+
+### 运算符
+
+* 算数运算符 FreeMarker表达式中完全支持算术运算,FreeMarker支持的算术运算符包括:+, - , * , / , %
+* 逻辑运算符 逻辑运算符有如下几个: 逻辑与:&& 逻辑或:|| 逻辑非:! 逻辑运算符只能作用于布尔值,否则将产生错误
+* 比较运算符 表达式中支持的比较运算符有如下几个：
+  * =或者==:判断两个值是否相等
+  * !=:判断两个值是否不等
+  * \> 或者gt:判断左边值是否大于右边值
+  * \>=或者gte:判断左边值是否大于等于右边值
+  * <或者lt:判断左边值是否小于右 边值
+  * <=或者lte:判断左边值是否小于等于右边值
+
+
+
+注意: =和!=可以用于字符串,数值和日期来比较是否相等,但=和!=两边必须是相同类型的值,否则会产生错误,而且 FreeMarker是精确比较,"x","x ","X"是不等的.其它的运行符可以作用于数字和日期,但不能作用于字符串,大部分的时 候,使用gt等字母运算符代替>会有更好的效果,因为 FreeMarker会把>解释成FTL标签的结束字符,当然,也可以使用括 号来避免这种情况,如:<#if (x>y)>
+
+
+
+
+
+### 空值处理
+
+判断某变量是否存在使用 “??” 用法为:variable??,如果该变量存在,返回true,否则返回false
+
+缺失变量默认值使用 “!” 使用!要以指定一个默认值，当变量为空时显示默认值
+
+如果是嵌套对象则建议使用（）括起来
+
+
+
+为防止stus为空报错可以加上if判断
+
+
+
+
+
+#### 创建test5.ftl
+
+```html
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<#if stus??>
+
+    <table>
+        <tr>
+            <td>序号</td>
+            <td>学号</td>
+            <td>姓名</td>
+            <td>性别</td>
+            <td>年龄</td>
+        </tr>
+        <#list stus as stu>
+            <tr>
+                <td <#if stu_index==2>style="color: hotpink" </#if>>${stu_index + 1}</td>
+                <td>${stu.id}</td>
+                <td<#if stu.name=='张三'> style="color: skyblue" </#if>>${stu.name}</td>
+                <td>${stu.sex}</td>
+                <td>${(stu.age)!}</td>
+            </tr>
+        </#list>
+    </table>
+
+</#if>
+
+<#if !stus??>
+    变量 stus 为null
+</#if>
+
+</body>
+</html>
+
+```
+
+
+
+
+
+
+
+#### 修改controller
+
+```java
+package mao.spring_boot_freemarker_demo;
+
+import mao.spring_boot_freemarker_demo.entity.Student;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Project name(项目名称)：spring_boot_freemarker_demo
+ * Package(包名): mao.spring_boot_freemarker_demo
+ * Class(类名): TestController
+ * Author(作者）: mao
+ * Author QQ：1296193245
+ * GitHub：https://github.com/maomao124/
+ * Date(创建日期)： 2023/1/29
+ * Time(创建时间)： 19:56
+ * Version(版本): 1.0
+ * Description(描述)： 无
+ */
+
+@Controller
+public class TestController
+{
+    @RequestMapping("/test1")
+    public String freemarker(Map<String, Object> map)
+    {
+        map.put("name", "张三");
+        //返回模板文件名称
+        return "test1";
+    }
+
+    @RequestMapping("/test2")
+    public String freemarker2(Map<String, Object> map)
+    {
+        Student student1 = new Student();
+        student1.setId(10001L);
+        student1.setName("张三");
+        student1.setSex("男");
+        student1.setAge(18);
+
+        Student student2 = new Student();
+        student2.setId(10002L);
+        student2.setName("李四");
+        student2.setSex("男");
+        student2.setAge(19);
+
+        Student student3 = new Student();
+        student3.setId(10004L);
+        student3.setName("王五");
+        student3.setSex("女");
+        student3.setAge(17);
+
+        List<Student> list = new ArrayList<>(3);
+        list.add(student1);
+        list.add(student2);
+        list.add(student3);
+
+        map.put("stus", list);
+
+        //返回模板文件名称
+        return "test2";
+    }
+
+    @RequestMapping("/test3")
+    public String freemarker3(Map<String, Object> map)
+    {
+        Student student1 = new Student();
+        student1.setId(10001L);
+        student1.setName("张三");
+        student1.setSex("男");
+        student1.setAge(18);
+
+        Student student2 = new Student();
+        student2.setId(10002L);
+        student2.setName("李四");
+        student2.setSex("男");
+        student2.setAge(19);
+
+        Student student3 = new Student();
+        student3.setId(10004L);
+        student3.setName("王五");
+        student3.setSex("女");
+        student3.setAge(17);
+
+        Map<String, Student> studentMap = new HashMap<>();
+
+        studentMap.put("student1", student1);
+        studentMap.put("student2", student2);
+        studentMap.put("student3", student3);
+
+        map.put("studentMap", studentMap);
+
+        //返回模板文件名称
+        return "test3";
+    }
+
+    @RequestMapping("/test4")
+    public String freemarker4(Map<String, Object> map)
+    {
+        Student student1 = new Student();
+        student1.setId(10001L);
+        student1.setName("张三");
+        student1.setSex("男");
+        student1.setAge(18);
+
+        Student student2 = new Student();
+        student2.setId(10002L);
+        student2.setName("李四");
+        student2.setSex("男");
+        student2.setAge(19);
+
+        Student student3 = new Student();
+        student3.setId(10004L);
+        student3.setName("王五");
+        student3.setSex("女");
+        student3.setAge(17);
+
+        List<Student> list = new ArrayList<>(3);
+        list.add(student1);
+        list.add(student2);
+        list.add(student3);
+
+        map.put("stus", list);
+
+        //返回模板文件名称
+        return "test4";
+    }
+
+    @RequestMapping("/test5")
+    public String freemarker5(Map<String, Object> map)
+    {
+        Student student1 = new Student();
+        student1.setId(10001L);
+        student1.setName("张三");
+        student1.setSex("男");
+        student1.setAge(18);
+
+        Student student2 = new Student();
+        student2.setId(10002L);
+        student2.setName("李四");
+        student2.setSex("男");
+        //一定概率为空
+        if (Math.random() > 0.5)
+        {
+            student2.setAge(19);
+        }
+        Student student3 = new Student();
+        student3.setId(10004L);
+        student3.setName("王五");
+        student3.setSex("女");
+        //一定概率为空
+        if (Math.random() > 0.5)
+        {
+            student3.setAge(17);
+        }
+
+
+        List<Student> list = new ArrayList<>(3);
+        list.add(student1);
+        list.add(student2);
+        list.add(student3);
+
+        //一定概率为空
+        if (Math.random() > 0.5)
+        {
+            map.put("stus", list);
+        }
+
+        //返回模板文件名称
+        return "test5";
+    }
+}
+```
+
+
+
+
+
+#### 运行测试
+
+http://localhost:8080/test5
+
+
+
+多刷新几次查看结果
+
+![image-20230129205727648](img/FreeMarker学习笔记/image-20230129205727648.png)
+
+
+
+![image-20230129205736010](img/FreeMarker学习笔记/image-20230129205736010.png)
+
+
+
+![image-20230129205744957](img/FreeMarker学习笔记/image-20230129205744957.png)
+
+
+
+![image-20230129205758229](img/FreeMarker学习笔记/image-20230129205758229.png)
+
+
+
+
+
+
+
+
+
+### 内置对象
 
